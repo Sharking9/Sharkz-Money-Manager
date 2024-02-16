@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp">
+    <TextView
+        android:id="@+id/text_tgl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tanggal waktu"
+        android:layout_marginBottom="10dp"
+        android:textStyle="italic"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/text_label"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="LABEL"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/text_name"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Name Deskripsi"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/text_jumlah"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Jumlah" />
+
+
+    </LinearLayout>
+
+
+</LinearLayout>
