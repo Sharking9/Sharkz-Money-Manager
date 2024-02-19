@@ -89,13 +89,19 @@ public class EditorActivity extends AppCompatActivity {
         if (tanggal == null || tanggal.equals("")){
             // Mendapatkan tanggal dan waktu saat ini
             Calendar calendar = Calendar.getInstance();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
             String dateTime = dateFormat.format(calendar.getTime());
 
             // Memisahkan tanggal dan waktu menggunakan spasi sebagai pemisah
             String[] parts = dateTime.split(" ");
             String tanggaledit = parts[0];
             String waktu = parts[1];
+
+            // Memeriksa apakah tanggal kurang dari 10 dan menambahkan angka 0 di depannya jika ya
+            if (tanggaledit.charAt(8) == ' ') {
+                tanggaledit = "0" + tanggaledit.substring(9); // Mengganti tanggal dengan angka 0 di depannya
+            }
+
             // Mengatur teks TextView dengan tanggal dan waktu saat ini
             editTanggal.setText(tanggaledit);
             editjam.setText(waktu);
@@ -163,7 +169,7 @@ public class EditorActivity extends AppCompatActivity {
     private void showDatePickerDialog() {
         final Calendar currentDate = Calendar.getInstance();
         // Memisahkan tanggal bulan thn
-        String[] parts = editTanggal.getText().toString().split("/");
+        String[] parts = editTanggal.getText().toString().split("-");
         int tgl24 = Integer.parseInt(parts[0]);
         int bln24 = Integer.parseInt(parts[1])-1; //aturan bln dikurangi 1
         int thn24 = Integer.parseInt(parts[2]);
@@ -175,10 +181,14 @@ public class EditorActivity extends AppCompatActivity {
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDayOfMonth) {
+                // Menambahkan angka 0 di depan selectedDayOfMonth jika kurang dari 10
+                String formattedSelectedDay = (selectedDayOfMonth < 10) ? "0" + selectedDayOfMonth : String.valueOf(selectedDayOfMonth);
+                String formattedSelectedMonth = ((selectedMonth + 1) < 10) ? "0" + (selectedMonth + 1) : String.valueOf((selectedMonth + 1));
+
                 // Update TextView with selected date
-                editTanggal.setText(selectedDayOfMonth + "/" + (selectedMonth + 1) + "/" + selectedYear);
+                editTanggal.setText(selectedYear + "-" + formattedSelectedMonth + "-" + formattedSelectedDay);
             }
-        }, thn24, bln24, tgl24);
+        }, tgl24, bln24, thn24);
 
         // Show DatePickerDialog
         datePickerDialog.show();
@@ -196,7 +206,7 @@ public class EditorActivity extends AppCompatActivity {
             @Override
             public void onTimeSet(TimePicker view, int selectedHour, int selectedMinute) {
                 // Update TextView with selected time
-                editjam.setText(String.format("%02d:%02d", selectedHour, selectedMinute));
+                editjam.setText(String.format("%02d:%02d:%02d", selectedHour, selectedMinute, 0));
             }
         }, Jam24, Menit24, true); // true untuk mode spinner
 

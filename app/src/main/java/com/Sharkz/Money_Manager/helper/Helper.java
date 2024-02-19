@@ -36,7 +36,7 @@ public class Helper extends SQLiteOpenHelper {
 
     public ArrayList<HashMap<String, String>> getAll(){
         ArrayList<HashMap<String, String>> list = new ArrayList<>();
-        String QUERY = "SELECT * FROM users";
+        String QUERY = "SELECT * FROM users ORDER BY tanggal DESC";
         SQLiteDatabase database = this.getWritableDatabase();
         Cursor cursor = database.rawQuery(QUERY, null);
         if (cursor.moveToFirst()){
