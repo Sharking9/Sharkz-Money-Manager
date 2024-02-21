@@ -54,11 +54,17 @@ public class Adapter extends BaseAdapter {
             TextView jumlah = view.findViewById(R.id.text_jumlah);
             TextView tgl = view.findViewById(R.id.text_tgl);
             TextView label = view.findViewById(R.id.text_label);
+            TextView type = view.findViewById(R.id.txttypeEI);
+            TextView aset = view.findViewById(R.id.txtaset);
+            TextView plusminus = view.findViewById(R.id.plusminus);
             Data data = lists.get(i);
             name.setText(data.getName());
             jumlah.setText(data.getJumlah());
             tgl.setText(data.getTanggal());
             label.setText(data.getLabel());
+            type.setText(data.getTypeEI());
+            aset.setText(data.getAset());
+            plusminus.setText(data.getPlusminus());
 
             // Mendapatkan Drawable dari ID Drawable
             Drawable drawable = ContextCompat.getDrawable(activity, data.getDrawableId());

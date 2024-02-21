@@ -25,10 +25,12 @@ public class EditorActivity extends AppCompatActivity {
 
     private EditText editName, editJumlah;
     private TextView editLabel;
+    private Button Expens, Incomes;
     private Button editTanggal, editjam, delete;
     private Button btnSave;
     private Helper db = new Helper(this);
     private String id, name, jumlah, tanggal, label;
+    private String TypeEI, Aset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,21 @@ public class EditorActivity extends AppCompatActivity {
         ///Import Fungsi Class File DeklarasiButton Java
         ButtonDeclarasi.initializeButtons(this);
         ///Import Fungsi Class File DeklarasiButton Java
+
+        Expens = findViewById(R.id.Expenses);
+        Expens.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TypeEI = Expens.getText().toString();
+            }
+        });
+        Incomes = findViewById(R.id.Incomes);
+        Incomes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TypeEI = Incomes.getText().toString();
+            }
+        });
 
         delete = findViewById(R.id.delete);
         delete.setOnClickListener(new View.OnClickListener() {
@@ -67,6 +84,8 @@ public class EditorActivity extends AppCompatActivity {
         jumlah = getIntent().getStringExtra("jumlah");
         tanggal = getIntent().getStringExtra("tanggal");
         label = getIntent().getStringExtra("label");
+        TypeEI = getIntent().getStringExtra("type");
+        Aset = getIntent().getStringExtra("aset");
 
         if (id == null || id.equals("")){
             setTitle("Tambah User");
@@ -107,6 +126,7 @@ public class EditorActivity extends AppCompatActivity {
             editjam.setText(waktu);
 
         }
+
         //SET Label default
         if (label == null || label.equals("")){
             Button button1 = findViewById(R.id.food11);
@@ -125,6 +145,15 @@ public class EditorActivity extends AppCompatActivity {
                 showTimePickerDialog();
             }
         });
+
+        ////SET type default
+        if (TypeEI == null || TypeEI.equals("")){
+            TypeEI = "EXP";
+        }
+        ////SET aset default
+        if (Aset == null || Aset.equals("")){
+            Aset = "Cash";
+        }
 
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,7 +179,7 @@ public class EditorActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Silakan isi semua data!", Toast.LENGTH_SHORT).show();
         } else {
             String fixDatetime = editTanggal.getText().toString() + " " + editjam.getText().toString();  ///Gabung Date Time
-            db.insert(editName.getText().toString(), editJumlah.getText().toString(), fixDatetime, editLabel.getText().toString());
+            db.insertRecords(editName.getText().toString(), editJumlah.getText().toString(), fixDatetime, editLabel.getText().toString(), TypeEI, Aset);
             finish();
         }
     }
@@ -160,10 +189,12 @@ public class EditorActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Silakan isi semua data!", Toast.LENGTH_SHORT).show();
         } else {
             String fixDatetime = editTanggal.getText().toString() + " " + editjam.getText().toString();   ///Gabung Date Time
-            db.update(Integer.parseInt(id), editName.getText().toString(), editJumlah.getText().toString(), fixDatetime, editLabel.getText().toString());
+            db.updateRecords(Integer.parseInt(id), editName.getText().toString(), editJumlah.getText().toString(), fixDatetime, editLabel.getText().toString(), TypeEI, Aset);
             finish();
         }
     }
+
+
 
 
     private void showDatePickerDialog() {

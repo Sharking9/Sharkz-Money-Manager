@@ -31,6 +31,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     Helper db = new Helper(this);
 
     int Expensbln, Incomebln;
-    TextView txtexpensbln, txtincomebln;
+    TextView txtexpensbln, txtincomebln, plusminus;
     FloatingActionButton btnAdd;
 
 
@@ -102,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
         txtincomebln = findViewById(R.id.txtincomBulanan);
 
 
+
+
         db = new Helper(getApplicationContext());
         btnAdd = findViewById(R.id.btn_add);
         btnAdd.setOnClickListener(new View.OnClickListener() {
@@ -123,6 +126,8 @@ public class MainActivity extends AppCompatActivity {
                 final String jumlah = lists.get(position).getJumlah();
                 final String tanggal = lists.get(position).getTanggal();
                 final String label = lists.get(position).getLabel();
+                final String type = lists.get(position).getTypeEI();
+                final String aset = lists.get(position).getAset();
                 final CharSequence[] dialogItem = {"Edit", "Hapus"};
                 dialog = new AlertDialog.Builder(MainActivity.this);
                 dialog.setItems(dialogItem, new DialogInterface.OnClickListener() {
@@ -136,10 +141,12 @@ public class MainActivity extends AppCompatActivity {
                                 intent.putExtra("jumlah", jumlah);
                                 intent.putExtra("tanggal", tanggal);
                                 intent.putExtra("label", label);
+                                intent.putExtra("type", type);
+                                intent.putExtra("aset", aset);
                                 startActivity(intent);
                                 break;
                             case 1:
-                                db.delete(Integer.parseInt(id));
+                                db.deleteRecords(Integer.parseInt(id));
                                 lists.clear();
                                 getData();
                                 break;
@@ -149,7 +156,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         getData();
-        txtexpensbln.setText(String.valueOf(Expensbln));
         // Menampilkan pesan toast
         Toast.makeText(getApplicationContext(), "pesan toast "+ Expensbln, Toast.LENGTH_LONG).show();
 
@@ -158,6 +164,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void getData(){
+        Expensbln = 0;
+        Incomebln = 0;
         ArrayList<HashMap<String, String>> rows = db.getAll();
         for (int i = 0; i < rows.size(); i++){
             String id = rows.get(i).get("id");
@@ -165,6 +173,9 @@ public class MainActivity extends AppCompatActivity {
             String jumlah = rows.get(i).get("jumlah");
             String tanggal = rows.get(i).get("tanggal");
             String label = rows.get(i).get("label");
+            String typeEI = rows.get(i).get("type");
+            String aset = rows.get(i).get("aset");
+            String fixpm = "okk";
 
             // Mengambil ID drawable dari label
             int drawableId = getDrawableIdFromLabel(label);
@@ -176,9 +187,16 @@ public class MainActivity extends AppCompatActivity {
             data.setTanggal(tanggal);
             data.setLabel(label);
             data.setDrawableId(drawableId); // Mengatur ID drawable ke objek Data
+            data.setTypeEI(typeEI);
+            data.setAset(aset);
+            if (Objects.equals(typeEI, "EXP")){ fixpm = "-"; Expensbln = Expensbln + Integer.parseInt(jumlah);}
+            else if (typeEI.equals("INC")){ fixpm = "+"; Incomebln = Incomebln + Integer.parseInt(jumlah);}
+            data.setPlusminus(fixpm);
             lists.add(data);
 
-            Expensbln = Expensbln + Integer.parseInt(jumlah);
+
+            txtexpensbln.setText(String.valueOf(Expensbln));
+            txtincomebln.setText(String.valueOf(Incomebln));
         }
 
 

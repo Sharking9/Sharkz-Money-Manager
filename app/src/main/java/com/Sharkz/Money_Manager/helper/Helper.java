@@ -14,7 +14,7 @@ import java.util.HashMap;
 
 public class Helper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 4;
     static final String DATABASE_NAME = "moneydb";
 
     public Helper(Context context){
@@ -23,20 +23,22 @@ public class Helper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        final String SQL_CREATE_TABLE = "CREATE TABLE users (id INTEGER PRIMARY KEY autoincrement, name TEXT NOT NULL, jumlah TEXT NOT NULL, tanggal TEXT NOT NULL, label TEXT NOT NULL)";
+        final String SQL_CREATE_TABLE = "CREATE TABLE Records (id INTEGER PRIMARY KEY autoincrement, name TEXT NOT NULL, jumlah TEXT NOT NULL, tanggal TEXT NOT NULL, label TEXT NOT NULL, type TEXT NOT NULL, aset TEXT NOT NULL)";
         sqLiteDatabase.execSQL(SQL_CREATE_TABLE);
-
+        final String SQL_CREATE_TABLE_ASET = "CREATE TABLE Aset (id INTEGER PRIMARY KEY autoincrement, name_aset TEXT NOT NULL, create_date TEXT NOT NULL, label TEXT NOT NULL, total TEXT NOT NULL)";
+        sqLiteDatabase.execSQL(SQL_CREATE_TABLE_ASET);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS users");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Records");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS Aset");
         onCreate(sqLiteDatabase);
     }
 
     public ArrayList<HashMap<String, String>> getAll(){
         ArrayList<HashMap<String, String>> list = new ArrayList<>();
-        String QUERY = "SELECT * FROM users ORDER BY tanggal DESC";
+        String QUERY = "SELECT * FROM Records ORDER BY tanggal DESC";
         SQLiteDatabase database = this.getWritableDatabase();
         Cursor cursor = database.rawQuery(QUERY, null);
         if (cursor.moveToFirst()){
@@ -47,6 +49,8 @@ public class Helper extends SQLiteOpenHelper {
                 map.put("jumlah", cursor.getString(2));
                 map.put("tanggal", cursor.getString(3));
                 map.put("label", cursor.getString(4));
+                map.put("type", cursor.getString(5));
+                map.put("aset", cursor.getString(6));
                 list.add(map);
             } while (cursor.moveToNext());
         }
@@ -54,21 +58,21 @@ public class Helper extends SQLiteOpenHelper {
         return list;
     }
 
-    public void insert (String name, String jumlah, String tanggal, String label){
+    public void insertRecords (String name, String jumlah, String tanggal, String label, String type, String aset){
         SQLiteDatabase database = this.getWritableDatabase();
-        String QUERY = "INSERT INTO users (name, jumlah, tanggal, label) VALUES ('"+name+"','"+jumlah+"','"+tanggal+"','"+label+"')";
+        String QUERY = "INSERT INTO Records (name, jumlah, tanggal, label, type, aset) VALUES ('"+name+"','"+jumlah+"','"+tanggal+"','"+label+"','"+type+"','"+aset+"')";
         database.execSQL(QUERY);
     }
 
-    public void update (int id, String name, String jumlah, String tanggal, String label){
+    public void updateRecords (int id, String name, String jumlah, String tanggal, String label, String type, String aset){
         SQLiteDatabase database = this.getWritableDatabase();
-        String QUERY = "UPDATE users SET name ='"+name+"', jumlah ='"+jumlah+"', tanggal ='"+tanggal+"', label ='"+label+"' WHERE id = "+id;
+        String QUERY = "UPDATE Records SET name ='"+name+"', jumlah ='"+jumlah+"', tanggal ='"+tanggal+"', label ='"+label+"', type ='"+type+"', aset ='"+aset+"' WHERE id = "+id;
         database.execSQL(QUERY);
     }
 
-    public void delete (int id){
+    public void deleteRecords (int id){
         SQLiteDatabase database = this.getWritableDatabase();
-        String QUERY = "DELETE FROM users WHERE id = "+id;
+        String QUERY = "DELETE FROM Records WHERE id = "+id;
         database.execSQL(QUERY);
     }
 
