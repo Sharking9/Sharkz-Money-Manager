@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Money Manager</string>
+    <string name="other">Other</string>
+    <string name="income">Income</string>
+    <string name="expenses">Expenses</string>
+    <string name="record">RECORD</string>
+    <string name="records">Records</string>
+    <string name="aset">Aset</string>
+    <string name="settings">Settings</string>
 </resources>

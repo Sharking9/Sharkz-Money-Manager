@@ -7,12 +7,16 @@ import android.app.TimePickerDialog;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -39,6 +43,7 @@ public class EditorActivity extends AppCompatActivity {
     private Helper db = new Helper(this);
     private String id, name, jumlah, tanggal, label;
     private String TypeEI, Aset;
+    private PopupWindow popupWindow;
     private ListView assetListView;
     List<Data> lists = new ArrayList<>();
     Adapter adapter;
@@ -51,6 +56,7 @@ public class EditorActivity extends AppCompatActivity {
         ///Import Fungsi Class File DeklarasiButton Java
         ButtonDeclarasi.initializeButtons(this);
         ///Import Fungsi Class File DeklarasiButton Java
+
 
 
 
@@ -144,7 +150,7 @@ public class EditorActivity extends AppCompatActivity {
 
 
 
-        assetListView = findViewById(R.id.asset_list_view);
+        assetListView = findViewById(R.id.asset_list_vie);
 
         adapter = new Adapter(EditorActivity.this, lists, false);
         assetListView.setAdapter(adapter);
@@ -152,6 +158,7 @@ public class EditorActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 assetListView.setVisibility(View.VISIBLE);
+
             }
         });
         assetListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -305,6 +312,7 @@ public class EditorActivity extends AppCompatActivity {
     public void handleButton9Click(String txt22) { editLabel.setText(txt22); }
 
     // Handler untuk klik tombol icon label dari Deklarasi ButtonDeclarasi.java
+
 
 
     private void getDataAset(){

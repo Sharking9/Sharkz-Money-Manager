@@ -14,8 +14,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.Sharkz.Money_Manager.adapter.Adapter;
+import com.Sharkz.Money_Manager.adapter.MyViewPagerAdapter;
 import com.Sharkz.Money_Manager.helper.Helper;
 import com.Sharkz.Money_Manager.model.Data;
 import com.google.android.gms.ads.AdRequest;
@@ -27,6 +29,7 @@ import com.google.android.gms.ads.initialization.OnInitializationCompleteListene
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,17 +40,10 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity {
 
     InterstitialAd mInterstitialAd;
-    ListView listView;
-    AlertDialog.Builder dialog;
-    List<Data> lists = new ArrayList<>();
-    Adapter adapter;
-    Helper db = new Helper(this);
 
-
-    int Expensbln, Incomebln;
-    TextView txtexpensbln, txtincomebln, plusminus;
-    FloatingActionButton btnAdd;
-
+    TabLayout tabLayout;
+    ViewPager2 viewPager2;
+    MyViewPagerAdapter myViewPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,140 +96,42 @@ public class MainActivity extends AppCompatActivity {
 
 //        intersial ads
 
-        txtexpensbln = findViewById(R.id.txtexpenBulanan);
-        txtincomebln = findViewById(R.id.txtincomBulanan);
 
+        tabLayout = findViewById(R.id.tab_layout);
+        viewPager2 = findViewById(R.id.view_pager);
+        myViewPagerAdapter = new MyViewPagerAdapter(this);
+        viewPager2.setAdapter(myViewPagerAdapter);
 
-
-
-        db = new Helper(getApplicationContext());
-        btnAdd = findViewById(R.id.btn_add);
-        btnAdd.setOnClickListener(new View.OnClickListener() {
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, EditorActivity.class);
-                startActivity(intent);
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager2.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
             }
         });
-        listView = findViewById(R.id.list_item);
-        adapter = new Adapter(MainActivity.this, lists, true);
-        listView.setAdapter(adapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id2) {
-                final String id = lists.get(position).getId();
-                final String name = lists.get(position).getName();
-                final String jumlah = lists.get(position).getJumlah();
-                final String tanggal = lists.get(position).getTanggal();
-                final String label = lists.get(position).getLabel();
-                final String type = lists.get(position).getTypeEI();
-                final String aset = lists.get(position).getAset();
-                final CharSequence[] dialogItem = {"Edit", "Hapus"};
-                dialog = new AlertDialog.Builder(MainActivity.this);
-                dialog.setItems(dialogItem, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int i1) {
-                        switch (i1){
-                            case 0:
-                                Intent intent = new Intent(MainActivity.this, EditorActivity.class);
-                                intent.putExtra("id", id);
-                                intent.putExtra("name", name);
-                                intent.putExtra("jumlah", jumlah);
-                                intent.putExtra("tanggal", tanggal);
-                                intent.putExtra("label", label);
-                                intent.putExtra("type", type);
-                                intent.putExtra("aset", aset);
-                                startActivity(intent);
-                                break;
-                            case 1:
-                                db.deleteRecords(Integer.parseInt(id));
-                                lists.clear();
-                                getData();
-                                break;
-                        }
-                    }
-                }).show();
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                tabLayout.getTabAt(position).select();
             }
         });
-        getData();
-        // Menampilkan pesan toast
-        Toast.makeText(getApplicationContext(), "pesan toast "+ Expensbln, Toast.LENGTH_LONG).show();
-        Log.d("TAG", "Masuk list2");
+
+
 
     }
 
 
 
-    private void getData(){
-        Expensbln = 0;
-        Incomebln = 0;
-        ArrayList<HashMap<String, String>> rows = db.getAll();
-        for (int i = 0; i < rows.size(); i++){
-            String id = rows.get(i).get("id");
-            String name = rows.get(i).get("name");
-            String jumlah = rows.get(i).get("jumlah");
-            String tanggal = rows.get(i).get("tanggal");
-            String label = rows.get(i).get("label");
-            String typeEI = rows.get(i).get("type");
-            String aset = rows.get(i).get("aset");
-            String fixpm = "okk";
-
-            // Mengambil ID drawable dari label
-            int drawableId = getDrawableIdFromLabel(label);
-
-            Data data = new Data();
-            data.setId(id);
-            data.setName(name);
-            data.setJumlah(jumlah);
-            data.setTanggal(tanggal);
-            data.setLabel(label);
-            data.setDrawableId(drawableId); // Mengatur ID drawable ke objek Data
-            data.setTypeEI(typeEI);
-            data.setAset(aset);
-            if (Objects.equals(typeEI, "EXP")){ fixpm = "-"; Expensbln = Expensbln + Integer.parseInt(jumlah);}
-            else if (typeEI.equals("INC")){ fixpm = "+"; Incomebln = Incomebln + Integer.parseInt(jumlah);}
-            data.setPlusminus(fixpm);
-            lists.add(data);
-
-
-            txtexpensbln.setText(String.valueOf(Expensbln));
-            txtincomebln.setText(String.valueOf(Incomebln));
-        }
-
-
-        adapter.notifyDataSetChanged();
-    }
-    private int getDrawableIdFromLabel(String label) {
-        switch (label) {
-            case "Food":
-                return R.drawable.local_dining_24;
-            case "Tax":
-                return R.drawable.wallet_24;
-            case "Health":
-                return R.drawable.health_and_safety_24;
-            case "Education":
-                return R.drawable.menu_book_24;
-            case "Transport":
-                return R.drawable.directions_bus_24;
-            case "Uang Jajan":
-                return R.drawable.shopping_cart_24;
-            case "Sport":
-                return R.drawable.fitness_center_24;
-            case "Other":
-                return R.drawable.payment_24;
-            case "Shodaqoh":
-                return R.drawable.moderator_24;
-            default:
-                return R.drawable.payment_24;
-        }
-    }
-
-    @Override
-    protected void onResume(){
-        super.onResume();
-        lists.clear();
-        getData();
-    }
 
 }
