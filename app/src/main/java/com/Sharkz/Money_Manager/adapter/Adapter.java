@@ -3,6 +3,7 @@ package com.Sharkz.Money_Manager.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,10 +21,12 @@ public class Adapter extends BaseAdapter {
     private Activity activity;
     private LayoutInflater inflater;
     private List<Data> lists;
+    private boolean isListViewRecords;
 
-    public Adapter(Activity activity, List<Data> lists){
+    public Adapter(Activity activity, List<Data> lists, boolean isListView){
         this.activity = activity;
         this.lists = lists;
+        this.isListViewRecords  = isListView;
     }
 
     @Override
@@ -47,30 +50,54 @@ public class Adapter extends BaseAdapter {
             inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
         if (view == null && inflater != null){
-            view = inflater.inflate(R.layout.list_users, null);
+//            view = inflater.inflate(R.layout.list_users, null);
+            if (isListViewRecords) {
+                view = inflater.inflate(R.layout.list_users, null, false);
+            } else {
+                view = inflater.inflate(R.layout.list_aset, null, false);
+            }
         }
         if (view != null) {
-            TextView name = view.findViewById(R.id.text_name);
-            TextView jumlah = view.findViewById(R.id.text_jumlah);
-            TextView tgl = view.findViewById(R.id.text_tgl);
-            TextView label = view.findViewById(R.id.text_label);
-            TextView type = view.findViewById(R.id.txttypeEI);
-            TextView aset = view.findViewById(R.id.txtaset);
-            TextView plusminus = view.findViewById(R.id.plusminus);
-            Data data = lists.get(i);
-            name.setText(data.getName());
-            jumlah.setText(data.getJumlah());
-            tgl.setText(data.getTanggal());
-            label.setText(data.getLabel());
-            type.setText(data.getTypeEI());
-            aset.setText(data.getAset());
-            plusminus.setText(data.getPlusminus());
+            // Mengisi data ke tampilan sesuai dengan jenis tampilan
+            if (isListViewRecords) {
+                TextView name = view.findViewById(R.id.text_name);
+                TextView jumlah = view.findViewById(R.id.text_jumlah);
+                TextView tgl = view.findViewById(R.id.text_tgl);
+                TextView label = view.findViewById(R.id.text_label);
+                TextView type = view.findViewById(R.id.txttypeEI);
+                TextView aset = view.findViewById(R.id.txtaset);
+                TextView plusminus = view.findViewById(R.id.plusminus);
 
-            // Mendapatkan Drawable dari ID Drawable
-            Drawable drawable = ContextCompat.getDrawable(activity, data.getDrawableId());
-            label.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
+                Data data = lists.get(i);
+                name.setText(data.getName());
+                jumlah.setText(data.getJumlah());
+                tgl.setText(data.getTanggal());
+                label.setText(data.getLabel());
+                type.setText(data.getTypeEI());
+                aset.setText(data.getAset());
+                plusminus.setText(data.getPlusminus());
+
+                // Mendapatkan Drawable dari ID Drawable
+                Drawable drawable = ContextCompat.getDrawable(activity, data.getDrawableId());
+                label.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
+
+            } else {
+                // Mengisi data untuk ListView kedua
+                TextView name_aset = view.findViewById(R.id.txt_name_aset);
+                TextView tgl_buat = view.findViewById(R.id.txt_tgl_buat);
+                TextView total = view.findViewById(R.id.txtTotal);
+
+                Data data = lists.get(i);
+                name_aset.setText(data.getAset());
+                tgl_buat.setText(data.getCreate_date());
+                total.setText(data.getTotal());
+
+
+            }
+
         }
         return view;
 
     }
+
 }

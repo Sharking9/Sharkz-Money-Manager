@@ -8,29 +8,40 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.Sharkz.Money_Manager.adapter.Adapter;
 import com.Sharkz.Money_Manager.helper.Helper;
+import com.Sharkz.Money_Manager.model.Data;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class EditorActivity extends AppCompatActivity {
 
     private EditText editName, editJumlah;
     private TextView editLabel;
     private Button Expens, Incomes;
-    private Button editTanggal, editjam, delete;
+    private Button editTanggal, editjam, delete, select_asset;
     private Button btnSave;
     private Helper db = new Helper(this);
     private String id, name, jumlah, tanggal, label;
     private String TypeEI, Aset;
+    private ListView assetListView;
+    List<Data> lists = new ArrayList<>();
+    Adapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,41 +52,15 @@ public class EditorActivity extends AppCompatActivity {
         ButtonDeclarasi.initializeButtons(this);
         ///Import Fungsi Class File DeklarasiButton Java
 
-        Expens = findViewById(R.id.Expenses);
-        Expens.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TypeEI = Expens.getText().toString();
-            }
-        });
-        Incomes = findViewById(R.id.Incomes);
-        Incomes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TypeEI = Incomes.getText().toString();
-            }
-        });
 
-        delete = findViewById(R.id.delete);
-        delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Mendapatkan teks dari editJumlah
-                String currentText = editJumlah.getText().toString();
-                // Menghapus satu karakter dari belakang
-                if (!currentText.isEmpty()) {
-                    currentText = currentText.substring(0, currentText.length() - 1);
-                }
-                // Menetapkan teks yang baru ke calctxt
-                editJumlah.setText(currentText);
-            }
-        });
 
         editName = findViewById(R.id.edit_name);
         editJumlah = findViewById(R.id.edit_jumlah);
         btnSave = findViewById(R.id.btn_save);
         editTanggal = findViewById(R.id.edit_tgl);
         editLabel = findViewById(R.id.edit_label);
+
+        select_asset = findViewById(R.id.asset);
 
         editjam = findViewById(R.id.edit_jam);
 
@@ -102,6 +87,8 @@ public class EditorActivity extends AppCompatActivity {
             editjam.setText(waktu);
 
             editLabel.setText(label);
+
+            select_asset.setText(Aset);
         }
 
         //SET TGL default
@@ -154,6 +141,62 @@ public class EditorActivity extends AppCompatActivity {
         if (Aset == null || Aset.equals("")){
             Aset = "Cash";
         }
+
+
+
+        assetListView = findViewById(R.id.asset_list_view);
+
+        adapter = new Adapter(EditorActivity.this, lists, false);
+        assetListView.setAdapter(adapter);
+        select_asset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                assetListView.setVisibility(View.VISIBLE);
+            }
+        });
+        assetListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final String selectedAsset = lists.get(position).getAset();
+                select_asset.setText(selectedAsset);
+                Aset = selectedAsset;
+                assetListView.setVisibility(View.GONE);
+            }
+        });
+        getDataAset();
+
+
+
+        Expens = findViewById(R.id.Expenses);
+        Expens.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TypeEI = Expens.getText().toString();
+            }
+        });
+        Incomes = findViewById(R.id.Incomes);
+        Incomes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TypeEI = Incomes.getText().toString();
+            }
+        });
+
+        delete = findViewById(R.id.delete);
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Mendapatkan teks dari editJumlah
+                String currentText = editJumlah.getText().toString();
+                // Menghapus satu karakter dari belakang
+                if (!currentText.isEmpty()) {
+                    currentText = currentText.substring(0, currentText.length() - 1);
+                }
+                // Menetapkan teks yang baru ke calctxt
+                editJumlah.setText(currentText);
+            }
+        });
+
 
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -264,6 +307,32 @@ public class EditorActivity extends AppCompatActivity {
     // Handler untuk klik tombol icon label dari Deklarasi ButtonDeclarasi.java
 
 
+    private void getDataAset(){
+        ArrayList<HashMap<String, String>> rows = db.getAllAset();
+        for (int i = 0; i < rows.size(); i++){
+            String id = rows.get(i).get("id");
+            String name_aset = rows.get(i).get("name_aset");
+            String create_date = rows.get(i).get("create_date");
+            String label = rows.get(i).get("label");
+            String total = rows.get(i).get("total");
+
+            // Mengambil ID drawable dari label
+//            int drawableId = getDrawableIdFromLabel(label);
+
+            Data data = new Data();
+            data.setId(id);
+            data.setAset(name_aset);
+            data.setCreate_date(create_date);
+            data.setLabel(label);
+//            data.setDrawableId(drawableId); // Mengatur ID drawable ke objek Data
+            data.setTotal(total);
+            lists.add(data);
+
+        }
+
+
+        adapter.notifyDataSetChanged();
+    }
 
 
 }

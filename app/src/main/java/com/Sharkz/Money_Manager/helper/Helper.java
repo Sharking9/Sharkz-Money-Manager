@@ -14,7 +14,7 @@ import java.util.HashMap;
 
 public class Helper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     static final String DATABASE_NAME = "moneydb";
 
     public Helper(Context context){
@@ -27,6 +27,12 @@ public class Helper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(SQL_CREATE_TABLE);
         final String SQL_CREATE_TABLE_ASET = "CREATE TABLE Aset (id INTEGER PRIMARY KEY autoincrement, name_aset TEXT NOT NULL, create_date TEXT NOT NULL, label TEXT NOT NULL, total TEXT NOT NULL)";
         sqLiteDatabase.execSQL(SQL_CREATE_TABLE_ASET);
+        String QUERY1 = "INSERT INTO Aset (name_aset, create_date, label, total) VALUES ('CASH','24/09/1999','Food','12400')";
+        sqLiteDatabase.execSQL(QUERY1);
+        String QUERY2 = "INSERT INTO Aset (name_aset, create_date, label, total) VALUES ('Bank Jp','24/09/1999','Transport','42300')";
+        sqLiteDatabase.execSQL(QUERY2);
+        String QUERY3 = "INSERT INTO Aset (name_aset, create_date, label, total) VALUES ('Invest','24/09/1999','Sport','56300')";
+        sqLiteDatabase.execSQL(QUERY3);
     }
 
     @Override
@@ -56,6 +62,25 @@ public class Helper extends SQLiteOpenHelper {
         }
         cursor.close();
         return list;
+    }
+    public ArrayList<HashMap<String, String>> getAllAset(){
+        ArrayList<HashMap<String, String>> list2 = new ArrayList<>();
+        String QUERY = "SELECT * FROM Aset ORDER BY name_aset DESC";
+        SQLiteDatabase database = this.getWritableDatabase();
+        Cursor cursor = database.rawQuery(QUERY, null);
+        if (cursor.moveToFirst()){
+            do {
+                HashMap<String, String> map = new HashMap<>();
+                map.put("id", cursor.getString(0));
+                map.put("name_aset", cursor.getString(1));
+                map.put("create_date", cursor.getString(2));
+                map.put("label", cursor.getString(3));
+                map.put("total", cursor.getString(4));
+                list2.add(map);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return list2;
     }
 
     public void insertRecords (String name, String jumlah, String tanggal, String label, String type, String aset){

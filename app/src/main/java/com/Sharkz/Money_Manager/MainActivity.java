@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     Adapter adapter;
     Helper db = new Helper(this);
 
+
     int Expensbln, Incomebln;
     TextView txtexpensbln, txtincomebln, plusminus;
     FloatingActionButton btnAdd;
@@ -115,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         listView = findViewById(R.id.list_item);
-        adapter = new Adapter(MainActivity.this, lists);
+        adapter = new Adapter(MainActivity.this, lists, true);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -158,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
         getData();
         // Menampilkan pesan toast
         Toast.makeText(getApplicationContext(), "pesan toast "+ Expensbln, Toast.LENGTH_LONG).show();
+        Log.d("TAG", "Masuk list2");
 
     }
 

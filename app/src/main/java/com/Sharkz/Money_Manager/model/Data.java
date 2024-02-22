@@ -1,14 +1,18 @@
 package com.Sharkz.Money_Manager.model;
 
+import java.security.SecureRandom;
+
 public class Data {
 
 
     private String id, name, jumlah, tanggal, label, type, aset, plusminus;
+
+    private String name_aset, create_date, total;
     private int drawableId;
 
 
 
-    public Data(String id, String name, String jumlah, String tanggal, String label, String type, String aset, String plusminus){
+    public Data(String id, String name, String jumlah, String tanggal, String label, String type, String aset, String plusminus, String name_aset, String create_date, String total){
         this.id = id;
         this.name = name;
         this.jumlah = jumlah;
@@ -17,6 +21,9 @@ public class Data {
         this.type = type;
         this.aset = aset;
         this.plusminus = plusminus;
+        this.name_aset = name_aset;
+        this.create_date = create_date;
+        this.total = total;
     }
 
     public Data(){
@@ -70,5 +77,30 @@ public class Data {
     public void setAset(String aset) { this.aset = aset; }
 
     public String getPlusminus() { return plusminus; }
-    public void setPlusminus(String plusminus) { this.plusminus = plusminus;   }
+    public void setPlusminus(String plusminus) { this.plusminus = plusminus; }
+
+
+    public String getName_aset() {
+        return name_aset;
+    }
+
+    public void setName_aset(String name_aset) {
+        this.name_aset = name_aset;
+    }
+
+    public String getCreate_date() {
+        return create_date;
+    }
+
+    public void setCreate_date(String create_date) {
+        this.create_date = create_date;
+    }
+
+    public String getTotal() {
+        return total;
+    }
+
+    public void setTotal(String total) {
+        this.total = total;
+    }
 }
