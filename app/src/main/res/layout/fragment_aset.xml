@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".Fragments.AsetFragment">
 
         <RelativeLayout
@@ -15,7 +14,7 @@
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/record"
+                android:text="@string/asset"
                 android:textSize="26sp"
                 android:textStyle="bold" />
 
@@ -26,7 +25,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_marginStart="20dp"
                 android:layout_marginBottom="40dp"
-                android:text="@string/expenses" />
+                android:text="Liabilities" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -35,10 +34,10 @@
                 android:layout_alignParentBottom="true"
                 android:layout_marginStart="125dp"
                 android:layout_marginBottom="40dp"
-                android:text="@string/income" />
+                android:text="Assets" />
 
             <TextView
-                android:id="@+id/txtexpenBulanan"
+                android:id="@+id/txttotalliabilities"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -49,7 +48,7 @@
                 android:textSize="25sp" />
 
             <TextView
-                android:id="@+id/txtincomBulanan"
+                android:id="@+id/txttotalassets"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -64,30 +63,33 @@
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/piechart_aset"
         android:layout_width="match_parent"
-        android:layout_height="200dp" />
+        android:layout_height="100dp"
+        android:layout_below="@+id/relativeLayout2"/>
 
-        <RelativeLayout
-            android:id="@+id/relativeLayout"
-            android:layout_width="match_parent"
-            android:layout_height="200dp">
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_below="@id/piechart_aset">
 
             <ListView
                 android:id="@+id/list_item"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"/>
 
-            </ListView>
+    </RelativeLayout>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_add"
+        android:layout_width="231dp"
+        android:layout_height="630dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="120dp"
+        android:clickable="true"
+        android:contentDescription="@string/other"
+        android:focusable="true"
+        android:src="@android:drawable/ic_input_add" />
 
-        </RelativeLayout>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btn_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:contentDescription="@string/other"
-            android:focusable="true"
-            android:src="@android:drawable/ic_input_add"/>
-
-</LinearLayout>
+</RelativeLayout>

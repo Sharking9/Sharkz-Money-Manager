@@ -1,25 +1,21 @@
 package com.Sharkz.Money_Manager;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.Sharkz.Money_Manager.adapter.Adapter;
 import com.Sharkz.Money_Manager.helper.Helper;
@@ -31,7 +27,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 public class EditorActivity extends AppCompatActivity {
 
@@ -40,10 +35,9 @@ public class EditorActivity extends AppCompatActivity {
     private Button Expens, Incomes;
     private Button editTanggal, editjam, delete, select_asset;
     private Button btnSave;
-    private Helper db = new Helper(this);
+    private final Helper db = new Helper(this);
     private String id, name, jumlah, tanggal, label;
     private String TypeEI, Aset;
-    private PopupWindow popupWindow;
     private ListView assetListView;
     List<Data> lists = new ArrayList<>();
     Adapter adapter;
@@ -297,12 +291,12 @@ public class EditorActivity extends AppCompatActivity {
     public void appendToCalctxt(String inputan) {
         String data1 = editJumlah.getText().toString();
         editJumlah.setText(data1 + inputan);
-    };
+    }
 
     // Handler untuk klik tombol icon label dari Deklarasi ButtonDeclarasi.java
     // Lakukan sesuatu saat tombol diklik
     public void handleButton1Click(String txt22) { editLabel.setText(txt22); }
-    public void handleButton2Click(Drawable btndraw) { editLabel.setCompoundDrawablesWithIntrinsicBounds(btndraw, null, null, null);; }
+    public void handleButton2Click(Drawable btndraw) { editLabel.setCompoundDrawablesWithIntrinsicBounds(btndraw, null, null, null); }
     public void handleButton3Click(String txt22) { editLabel.setText(txt22); }
     public void handleButton4Click(String txt22) { editLabel.setText(txt22); }
     public void handleButton5Click(String txt22) { editLabel.setText(txt22); }

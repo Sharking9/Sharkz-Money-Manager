@@ -3,12 +3,6 @@ package com.Sharkz.Money_Manager.Fragments;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,13 +12,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+
 import com.Sharkz.Money_Manager.EditorActivity;
-import com.Sharkz.Money_Manager.MainActivity;
 import com.Sharkz.Money_Manager.R;
 import com.Sharkz.Money_Manager.adapter.Adapter;
 import com.Sharkz.Money_Manager.helper.Helper;
 import com.Sharkz.Money_Manager.model.Data;
-import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -33,17 +30,15 @@ import java.util.List;
 import java.util.Objects;
 
 public class RecordsFragment extends Fragment {
-
-    InterstitialAd mInterstitialAd;
     ListView listView;
     AlertDialog.Builder dialog;
     List<Data> lists = new ArrayList<>();
     Adapter adapter;
     Helper db = new Helper(getContext());
-
-
     int Expensbln, Incomebln;
-    TextView txtexpensbln, txtincomebln, plusminus;
+
+    int Cash, Invest, Bank_jp;
+    TextView txtexpensbln, txtincomebln;
     FloatingActionButton btnAdd;
 
     @Override
@@ -58,8 +53,6 @@ public class RecordsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         txtexpensbln = view.findViewById(R.id.txtexpenBulanan);
         txtincomebln = view.findViewById(R.id.txtincomBulanan);
-
-
 
 
         db = new Helper(getContext());
@@ -123,6 +116,11 @@ public class RecordsFragment extends Fragment {
     private void getData(){
         Expensbln = 0;
         Incomebln = 0;
+
+        Cash = 0;
+        Invest = 0;
+        Bank_jp = 0;
+
         ArrayList<HashMap<String, String>> rows = db.getAll();
         for (int i = 0; i < rows.size(); i++){
             String id = rows.get(i).get("id");
@@ -152,9 +150,28 @@ public class RecordsFragment extends Fragment {
             lists.add(data);
 
 
-            txtexpensbln.setText(String.valueOf(Expensbln));
-            txtincomebln.setText(String.valueOf(Incomebln));
+            //Update Aset Realtime
+            if (aset.equals("Cash")){
+                if (Objects.equals(typeEI, "EXP")){ Cash = Cash - Integer.parseInt(jumlah);}
+                else if (typeEI.equals("INC")){ Cash = Cash + Integer.parseInt(jumlah);}
+            }
+            else if (aset.equals("Invest")){
+                if (Objects.equals(typeEI, "EXP")){ Invest = Invest - Integer.parseInt(jumlah);}
+                else if (typeEI.equals("INC")){ Invest = Invest + Integer.parseInt(jumlah);}
+            }
+            else if (aset.equals("Bank Jp")){
+                if (Objects.equals(typeEI, "EXP")){ Bank_jp = Bank_jp - Integer.parseInt(jumlah);}
+                else if (typeEI.equals("INC")){ Bank_jp = Bank_jp + Integer.parseInt(jumlah);}
+            }
+
         }
+        db.updateTotalAsets("Cash", String.valueOf(Cash));
+        db.updateTotalAsets("Invest", String.valueOf(Invest));
+        db.updateTotalAsets("Bank Jp", String.valueOf(Bank_jp));
+
+
+        txtexpensbln.setText(String.valueOf(Expensbln));
+        txtincomebln.setText(String.valueOf(Incomebln));
 
 
         adapter.notifyDataSetChanged();

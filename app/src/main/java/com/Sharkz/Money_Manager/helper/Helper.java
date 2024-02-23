@@ -14,7 +14,7 @@ import java.util.HashMap;
 
 public class Helper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
     static final String DATABASE_NAME = "moneydb";
 
     public Helper(Context context){
@@ -27,7 +27,7 @@ public class Helper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(SQL_CREATE_TABLE);
         final String SQL_CREATE_TABLE_ASET = "CREATE TABLE Aset (id INTEGER PRIMARY KEY autoincrement, name_aset TEXT NOT NULL, create_date TEXT NOT NULL, label TEXT NOT NULL, total TEXT NOT NULL)";
         sqLiteDatabase.execSQL(SQL_CREATE_TABLE_ASET);
-        String QUERY1 = "INSERT INTO Aset (name_aset, create_date, label, total) VALUES ('CASH','24/09/1999','Food','12400')";
+        String QUERY1 = "INSERT INTO Aset (name_aset, create_date, label, total) VALUES ('Cash','24/09/1999','Food','12400')";
         sqLiteDatabase.execSQL(QUERY1);
         String QUERY2 = "INSERT INTO Aset (name_aset, create_date, label, total) VALUES ('Bank Jp','24/09/1999','Transport','42300')";
         sqLiteDatabase.execSQL(QUERY2);
@@ -98,6 +98,13 @@ public class Helper extends SQLiteOpenHelper {
     public void deleteRecords (int id){
         SQLiteDatabase database = this.getWritableDatabase();
         String QUERY = "DELETE FROM Records WHERE id = "+id;
+        database.execSQL(QUERY);
+    }
+
+
+    public void updateTotalAsets (String name_aset, String total){
+        SQLiteDatabase database = this.getWritableDatabase();
+        String QUERY = "UPDATE Aset SET total ='"+total+"' WHERE name_aset ='"+name_aset+"'";
         database.execSQL(QUERY);
     }
 

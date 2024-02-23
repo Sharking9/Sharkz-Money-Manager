@@ -36,11 +36,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-
 public class MainActivity extends AppCompatActivity {
 
     InterstitialAd mInterstitialAd;
-
     TabLayout tabLayout;
     ViewPager2 viewPager2;
     MyViewPagerAdapter myViewPagerAdapter;
