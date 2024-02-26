@@ -36,7 +36,7 @@ import java.util.Objects;
 
 public class BillFragment extends Fragment {
     Helper db = new Helper(getContext());
-    ListView listView;
+    ListView listViewExpen;
     List<Data> lists = new ArrayList<>();
     Adapter adapter;
 
@@ -46,6 +46,9 @@ public class BillFragment extends Fragment {
     LineChart lineChart3;
     ArrayList<Entry> dataVals1, dataVals2;
     LineDataSet lineDataSet1,lineDataSet2;
+
+    ArrayList<String[]> dataExpen, dataIncome;
+    ArrayList<String> dataLabel;
     TextView txttotalExpens, txttotalIncome;
     int Total_Expens;
 
@@ -62,19 +65,28 @@ public class BillFragment extends Fragment {
 
         txttotalExpens = view.findViewById(R.id.txttotalExpens);
         txttotalIncome = view.findViewById(R.id.txttotalIncome);
-        pieChart_expens = view.findViewById(R.id.piechart_expesens);
 
+        listViewExpen = view.findViewById(R.id.list_percent_expens);
+        adapter = new Adapter(getActivity(), lists, "AsetListView");
+        listViewExpen.setAdapter(adapter);
+
+        pieChart_expens = view.findViewById(R.id.piechart_expesens);
         db = new Helper(getContext());
-        getDataRecordsExpenskePieChart();
+        getDataRecordsExpenskePieChartdanListExpen();
         SetupPieChartExpens_legend_CustomLegendEntry();
+
+
 
     }
 
-    private void getDataRecordsExpenskePieChart(){
+    private void getDataRecordsExpenskePieChartdanListExpen(){
         Total_Expens = 0;
         int TempFood = 0, TempSport = 0, TempHealth = 0;
+        dataExpen = new ArrayList<>();
 
         entries1 = new ArrayList<>();
+
+        getAllLabel();
 
         ArrayList<HashMap<String, String>> rows = db.getAll_Exp_Inc("EXP");
         for (int i = 0; i < rows.size(); i++){
@@ -97,44 +109,54 @@ public class BillFragment extends Fragment {
                                 if (Objects.equals(name_label, "Food")) {
                                     TempFood = TempFood + jumlahC;
                                     entries1.add(new PieEntry(TempFood, "Food"));
-                                    TempFood = 0;
+                                    AddDatakeList("Food", String.valueOf(TempFood));
                                     if (TempSport != 0){
                                         entries1.add(new PieEntry(TempSport, "Sport"));
+                                        AddDatakeList("Sport", String.valueOf(TempSport));
                                     }
                                     if (TempHealth != 0){
                                         entries1.add(new PieEntry(TempHealth, "Health"));
+                                        AddDatakeList("Health", String.valueOf(TempHealth));
                                     }
                                 }else if (Objects.equals(name_label, "Sport")) {
                                     TempSport = TempSport + jumlahC;
                                     entries1.add(new PieEntry(TempSport, "Sport"));
-                                    TempSport = 0;
+                                    AddDatakeList("Sport", String.valueOf(TempSport));
                                     if (TempFood != 0){
                                         entries1.add(new PieEntry(TempFood, "Food"));
+                                        AddDatakeList("Food", String.valueOf(TempFood));
                                     }
                                     if (TempHealth != 0){
                                         entries1.add(new PieEntry(TempHealth, "Health"));
+                                        AddDatakeList("Health", String.valueOf(TempHealth));
                                     }
                                 }else if (Objects.equals(name_label, "Health")) {
                                     TempHealth = TempHealth + jumlahC;
                                     entries1.add(new PieEntry(TempHealth, "Health"));
-                                    TempHealth = 0;
+                                    AddDatakeList("Health", String.valueOf(TempHealth));
                                     if (TempFood != 0){
                                         entries1.add(new PieEntry(TempFood, "Food"));
+                                        AddDatakeList("Food", String.valueOf(TempFood));
                                     }
                                     if (TempSport != 0){
                                         entries1.add(new PieEntry(TempSport, "Sport"));
+                                        AddDatakeList("Sport", String.valueOf(TempSport));
                                     }
                                 }
 
                             } else {
                                 int Rowscuma1 = jumlahC;
                                 entries1.add(new PieEntry(Rowscuma1, name_label));
+                                AddDatakeList(name_label, String.valueOf(Rowscuma1));
                             }
                     }
 
 
             Total_Expens = Total_Expens + Integer.parseInt(jumlah);
+
         }
+        adapter.notifyDataSetChanged(); ///beritahu adapter list telah diset
+
 
         pieDataSet_expens = new PieDataSet(entries1, "Expense this month");
         pieDataSet_expens.setColors(ColorTemplate.MATERIAL_COLORS);
@@ -198,10 +220,38 @@ public class BillFragment extends Fragment {
         pieChart_expens.invalidate();
     }
 
+
+    private void AddDatakeList(String name_label, String jumlah){
+        Data data = new Data();
+        data.setAset(name_label);
+//            data.setLabel(label);
+//            data.setDrawableId(drawableId); // Mengatur ID drawable ke objek Data
+        data.setTotal(jumlah);
+        lists.add(data);
+    }
+    private void getAllLabel(){
+        ArrayList<HashMap<String, String>> rowslabel = db.getAll("ASC");
+        dataLabel = new ArrayList<>();
+        for (int i = 0; i < rowslabel.size(); i++){
+            String name_label = rowslabel.get(i).get("label");
+            boolean found = false;
+            for (String label3 : dataLabel){
+                if (Objects.equals(name_label, label3)){
+                    found = true;
+                    break; // keluar dari loop karena sudah ditemukan
+                }
+            }
+            if (!found) {
+                dataLabel.add(name_label);
+            }
+        }
+//        Log.d("TAG", "dataLabel " + dataLabel.get(0));
+    }
     @Override
     public void onResume(){
         super.onResume();
-        getDataRecordsExpenskePieChart();
+        lists.clear(); //hapus data pas oncreate agar tidak double
+        getDataRecordsExpenskePieChartdanListExpen();
         SetupPieChartExpens_legend_CustomLegendEntry();
     }
 }
