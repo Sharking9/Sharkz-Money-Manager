@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragments.BillFragment">
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/textJudul"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bills"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textJudul"
+            android:text="Expense"
+            android:textSize="20sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textJudul"
+            android:layout_marginStart="125dp"
+            android:text="Income"
+            android:textSize="20sp"/>
+
+        <TextView
+            android:id="@+id/txttotalExpens"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textJudul"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="25dp"
+            android:text="0.00"
+            android:textSize="25sp" />
+
+        <TextView
+            android:id="@+id/txttotalIncome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textJudul"
+            android:layout_marginStart="130dp"
+            android:layout_marginTop="25dp"
+            android:text="0.00"
+            android:textSize="25sp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/Expenses_colom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_below="@+id/relativeLayout2">
+        <TextView
+            android:id="@+id/Expenses_Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/expenses"
+            android:textSize="24dp"
+            android:textStyle="bold"/>
+
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/piechart_expesens"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_below="@+id/Expenses_Title"
+            android:layout_alignParentStart="true" />
+
+        <RelativeLayout
+            android:id="@+id/list_percent_expens_container2"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_below="@id/piechart_expesens">
+
+            <ListView
+                android:id="@+id/list_percent_expens"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/linechart_ExpenXIncom"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_below="@+id/Expenses_colom"/>
+
+
+    <RelativeLayout
+        android:id="@+id/list_container2"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_below="@id/linechart_ExpenXIncom">
+
+        <ListView
+            android:id="@+id/list_main_bill"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_add"
+        android:layout_width="231dp"
+        android:layout_height="630dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="120dp"
+        android:clickable="true"
+        android:contentDescription="@string/other"
+        android:focusable="true"
+        android:src="@android:drawable/ic_input_add" />
+
+</RelativeLayout>

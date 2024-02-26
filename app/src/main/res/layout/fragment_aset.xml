@@ -60,11 +60,19 @@
 
         </RelativeLayout>
 
-    <com.github.mikephil.charting.charts.PieChart
-        android:id="@+id/piechart_aset"
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/linechart3"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_below="@+id/relativeLayout2"/>
+
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/piechart_aset"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:layout_below="@+id/linechart3"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="0dp"/>
 
     <RelativeLayout
         android:id="@+id/relativeLayout"
@@ -73,7 +81,7 @@
         android:layout_below="@id/piechart_aset">
 
             <ListView
-                android:id="@+id/list_item"
+                android:id="@+id/list_main_aset"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 

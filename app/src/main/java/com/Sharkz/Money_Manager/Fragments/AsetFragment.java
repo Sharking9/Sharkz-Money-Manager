@@ -3,10 +3,12 @@ package com.Sharkz.Money_Manager.Fragments;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.os.Bundle;
+import android.renderscript.Sampler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,15 +16,23 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.Sharkz.Money_Manager.R;
+import com.Sharkz.Money_Manager.adapter.Adapter;
 import com.Sharkz.Money_Manager.helper.Helper;
 import com.Sharkz.Money_Manager.model.Data;
+import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.LegendEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,13 +41,21 @@ import java.util.Objects;
 
 
 public class AsetFragment extends Fragment {
-
     Helper db = new Helper(getContext());
+    ListView listView;
+    List<Data> lists = new ArrayList<>();
+    Adapter adapter;
+
     PieChart pieChart;
     PieDataSet pieDataSet;
     ArrayList<PieEntry> entries1;
+    LineChart lineChart3;
+    ArrayList<Entry> dataVals1, dataVals2;
+    LineDataSet lineDataSet1,lineDataSet2;
     TextView txttotalasets, txttotalliabilities;
     int Total_Aset;
+    int fixpm, fixpm2;
+    String blnAset = "09", blnAset2 = "09";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,9 +70,19 @@ public class AsetFragment extends Fragment {
         txttotalasets = view.findViewById(R.id.txttotalassets);
         txttotalliabilities = view.findViewById(R.id.txttotalliabilities);
         pieChart = view.findViewById(R.id.piechart_aset);
+        lineChart3 = view.findViewById(R.id.linechart3);
+
+
         db = new Helper(getContext());
         getDataAsetkePieChart();
         SetupPieChart_legend_CustomLegendEntry();
+        getDataAsetkeLineChart();
+        SetupLineChart3();
+
+        listView = view.findViewById(R.id.list_main_aset);
+        adapter = new Adapter(getActivity(), lists, "AsetListView");
+        listView.setAdapter(adapter);
+        getDataListAset();
 
 
 
@@ -97,10 +125,12 @@ public class AsetFragment extends Fragment {
         //legend attributes
         Legend legend = pieChart.getLegend();
         legend.setForm(Legend.LegendForm.SQUARE);
-        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.CENTER);
         legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
         legend.setOrientation(Legend.LegendOrientation.VERTICAL);
         legend.setDrawInside(false);
+        legend.setXOffset(20);
+        legend.setYOffset(-100);
 
         // Tambahkan legend
         ArrayList<LegendEntry> legendEntries = new ArrayList<>();
@@ -137,11 +167,172 @@ public class AsetFragment extends Fragment {
         pieChart.invalidate();
     }
 
+    private void SetupLineChart3(){
+        lineDataSet1 = new LineDataSet(dataVals1, "Data 1");
+        lineDataSet1.setColor(Color.BLUE);
+        lineDataSet2 = new LineDataSet(dataVals2, "Data 2");
+        lineDataSet2.setColor(Color.RED);
+
+        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+        dataSets.add(lineDataSet1);
+        dataSets.add(lineDataSet2);
+
+        lineChart3.setBackgroundColor(Color.GRAY);
+        lineChart3.setNoDataText("No Data");
+        lineChart3.setNoDataTextColor(Color.BLUE);
+        lineChart3.setDrawGridBackground(true);
+        lineChart3.setDrawBorders(false);
+        lineChart3.setBorderColor(Color.RED);
+        lineChart3.setBorderWidth(5);
+
+        LineData data = new LineData(dataSets);
+        lineChart3.setData(data);
+        lineChart3.invalidate();
+    }
+    private void getDataAsetkeLineChart(){
+        dataVals1 = new ArrayList<Entry>();
+        dataVals2 = new ArrayList<Entry>();
+
+        ArrayList<HashMap<String, String>> rows = db.getAll("ASC");
+        int Tempblncash = -1,Tempblninvest = -1;
+        int Tempcash = 0, TempInvest = 0;
+        for (int i = 0; i < rows.size(); i++) {
+            String aset = rows.get(i).get("aset");
+            String tanggal = rows.get(i).get("tanggal");
+            String jumlah = rows.get(i).get("jumlah");
+            String typeEI = rows.get(i).get("type");
+            String tanggalnext, asetnext;
+            // Memastikan kita tidak mencoba mengakses elemen setelah indeks terakhir
+            if (i < rows.size() - 1) {
+                tanggalnext = rows.get(i + 1).get("tanggal");
+                // Lakukan operasi lain dengan tanggalnext
+            } else {
+                tanggalnext = "2024-09-24 17:53:40";
+            }
+
+            fixpmfunc(typeEI, jumlah); //2500 invest 2  Tcash ada Tinves ada
+            pisahbln(tanggal);  //02
+            pisahbln2(tanggalnext);  //03
+
+            if (Objects.equals(blnAset, blnAset2)) {
+                if (Objects.equals(aset, "Cash")) {
+                    fixpm = Tempcash + fixpm;
+                    Tempcash = fixpm;
+                }else if (Objects.equals(aset, "Invest")) {
+                    fixpm = TempInvest + fixpm;
+                    TempInvest = fixpm;
+                }
+            } else if (!Objects.equals(blnAset, blnAset2)) {
+                if (Tempcash != 0){
+                    if (Objects.equals(aset, "Cash")){
+                        fixpm = Tempcash + fixpm;
+                    } else if (Objects.equals(aset, "Invest")){
+                        fixpm2 = Tempcash;
+                        dataVals1.add(new Entry(Float.parseFloat(blnAset), Float.parseFloat(String.valueOf(fixpm2))));
+//                        Log.d("TAG", "Masuk getdataLine TempCash dari fix aset "+aset+" "+ blnAset+" "+blnAset2+" "+fixpm2);
+                    }
+                    Tempcash = 0; //total diset dan temp reset
+                }
+                if (TempInvest != 0){
+                    if (Objects.equals(aset, "Invest")){
+                        fixpm = TempInvest + fixpm;
+                    } else if (Objects.equals(aset, "Cash")){
+                        fixpm2 = TempInvest;
+                        dataVals2.add(new Entry(Float.parseFloat(blnAset), Float.parseFloat(String.valueOf(fixpm2))));
+//                        Log.d("TAG", "Masuk getdataLine TempInvest dari fix aset "+aset+" "+ blnAset+" "+blnAset2+" "+fixpm2);
+                    }
+                    TempInvest = 0; //total diset dan temp reset
+                }
+                if (Tempcash == 0 && TempInvest == 0) {
+                    if (Objects.equals(aset, "Cash")) {
+                        dataVals1.add(new Entry(Float.parseFloat(blnAset), Float.parseFloat(String.valueOf(fixpm))));
+//                        Log.d("TAG", "Masuk For getdataLine21 "+aset+" "+ blnAset+" "+blnAset2+" "+fixpm);
+
+                    }else if (Objects.equals(aset, "Invest")) {
+                        dataVals2.add(new Entry(Float.parseFloat(blnAset), Float.parseFloat(String.valueOf(fixpm))));
+//                        Log.d("TAG", "Masuk For getdataLine22 "+aset+" "+ blnAset+" "+blnAset2+" "+fixpm);
+
+                    }
+                }
+            }
+
+
+        }
+
+
+    }
+    private void fixpmfunc(String typeEI2, String jumlah){
+        fixpm = 0;
+        if (Objects.equals(typeEI2, "EXP")){
+            fixpm = fixpm - Integer.parseInt(jumlah);
+        }
+        else if (typeEI2.equals("INC")){
+            fixpm = fixpm + Integer.parseInt(jumlah);
+        }
+    }
+    private void pisahbln(String dateTime){
+        // Memisahkan tanggal dan waktu menggunakan spasi sebagai pemisah
+        String[] parts = dateTime.split(" ");
+        String tanggaledit = parts[0];
+        String waktu = parts[1];
+        String[] parts2 = tanggaledit.split("-");
+        blnAset = parts2[1];
+
+
+        // Memeriksa apakah tanggal kurang dari 10 dan menambahkan angka 0 di depannya jika ya
+//        if (tanggaledit.charAt(8) == ' ') {
+//            tanggaledit = "0" + tanggaledit.substring(9); // Mengganti tanggal dengan angka 0 di depannya
+//        }
+    }
+    private void pisahbln2(String dateTime){
+        // Memisahkan tanggal dan waktu menggunakan spasi sebagai pemisah
+        String[] parts = dateTime.split(" ");
+        String tanggaledit = parts[0];
+        String waktu = parts[1];
+        String[] parts2 = tanggaledit.split("-");
+        blnAset2 = parts2[1];
+
+
+        // Memeriksa apakah tanggal kurang dari 10 dan menambahkan angka 0 di depannya jika ya
+//        if (tanggaledit.charAt(8) == ' ') {
+//            tanggaledit = "0" + tanggaledit.substring(9); // Mengganti tanggal dengan angka 0 di depannya
+//        }
+    }
+
+    private void getDataListAset(){
+        ArrayList<HashMap<String, String>> rows = db.getAllAset();
+        for (int i = 0; i < rows.size(); i++){
+            String id = rows.get(i).get("id");
+            String name_aset = rows.get(i).get("name_aset");
+            String create_date = rows.get(i).get("create_date");
+            String label = rows.get(i).get("label");
+            String total = rows.get(i).get("total");
+
+            // Mengambil ID drawable dari label
+//            int drawableId = getDrawableIdFromLabel(label);
+
+            Data data = new Data();
+            data.setId(id);
+            data.setAset(name_aset);
+//            data.setCreate_date(create_date);
+//            data.setLabel(label);
+//            data.setDrawableId(drawableId); // Mengatur ID drawable ke objek Data
+            data.setTotal(total);
+            lists.add(data);
+
+        }
+
+
+        adapter.notifyDataSetChanged();
+    }
+
     @Override
     public void onResume(){
         super.onResume();
         getDataAsetkePieChart();
-        pieChart.invalidate();
+        SetupPieChart_legend_CustomLegendEntry();
+        getDataAsetkeLineChart();
+        SetupLineChart3();
     }
 
 

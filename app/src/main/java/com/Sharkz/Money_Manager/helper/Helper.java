@@ -42,9 +42,9 @@ public class Helper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public ArrayList<HashMap<String, String>> getAll(){
+    public ArrayList<HashMap<String, String>> getAll(String Sort){
         ArrayList<HashMap<String, String>> list = new ArrayList<>();
-        String QUERY = "SELECT * FROM Records ORDER BY tanggal DESC";
+        String QUERY = "SELECT * FROM Records ORDER BY tanggal "+Sort+" ";
         SQLiteDatabase database = this.getWritableDatabase();
         Cursor cursor = database.rawQuery(QUERY, null);
         if (cursor.moveToFirst()){
@@ -81,6 +81,27 @@ public class Helper extends SQLiteOpenHelper {
         }
         cursor.close();
         return list2;
+    }
+    public ArrayList<HashMap<String, String>> getAll_Exp_Inc(String TypeEI){
+        ArrayList<HashMap<String, String>> list = new ArrayList<>();
+        String QUERY = "SELECT * FROM Records WHERE type ='"+TypeEI+"' ";
+        SQLiteDatabase database = this.getWritableDatabase();
+        Cursor cursor = database.rawQuery(QUERY, null);
+        if (cursor.moveToFirst()){
+            do {
+                HashMap<String, String> map = new HashMap<>();
+                map.put("id", cursor.getString(0));
+                map.put("name", cursor.getString(1));
+                map.put("jumlah", cursor.getString(2));
+                map.put("tanggal", cursor.getString(3));
+                map.put("label", cursor.getString(4));
+                map.put("type", cursor.getString(5));
+                map.put("aset", cursor.getString(6));
+                list.add(map);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return list;
     }
 
     public void insertRecords (String name, String jumlah, String tanggal, String label, String type, String aset){

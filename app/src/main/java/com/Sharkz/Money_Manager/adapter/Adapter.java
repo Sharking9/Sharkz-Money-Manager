@@ -3,7 +3,6 @@ package com.Sharkz.Money_Manager.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,17 +15,18 @@ import com.Sharkz.Money_Manager.R;
 import com.Sharkz.Money_Manager.model.Data;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Adapter extends BaseAdapter {
     private Activity activity;
     private LayoutInflater inflater;
     private List<Data> lists;
-    private boolean isListViewRecords;
+    private String isListViewUse;
 
-    public Adapter(Activity activity, List<Data> lists, boolean isListView){
+    public Adapter(Activity activity, List<Data> lists, String isListView){
         this.activity = activity;
         this.lists = lists;
-        this.isListViewRecords  = isListView;
+        this.isListViewUse  = isListView;
     }
 
     @Override
@@ -51,15 +51,17 @@ public class Adapter extends BaseAdapter {
         }
         if (view == null && inflater != null){
 //            view = inflater.inflate(R.layout.list_users, null);
-            if (isListViewRecords) {
+            if (Objects.equals(isListViewUse, "RecordsListView")) {
                 view = inflater.inflate(R.layout.list_users, null, false);
-            } else {
+            } else if (Objects.equals(isListViewUse, "AsetListView")) {
                 view = inflater.inflate(R.layout.list_aset, null, false);
+            } else if (Objects.equals(isListViewUse, "Select Aset")){
+                view = inflater.inflate(R.layout.list_select_aset, null, false);
             }
         }
         if (view != null) {
             // Mengisi data ke tampilan sesuai dengan jenis tampilan
-            if (isListViewRecords) {
+            if (Objects.equals(isListViewUse, "RecordsListView")) {
                 TextView name = view.findViewById(R.id.text_name);
                 TextView jumlah = view.findViewById(R.id.text_jumlah);
                 TextView tgl = view.findViewById(R.id.text_tgl);
@@ -81,7 +83,7 @@ public class Adapter extends BaseAdapter {
                 Drawable drawable = ContextCompat.getDrawable(activity, data.getDrawableId());
                 label.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
 
-            } else {
+            } else if (Objects.equals(isListViewUse, "Select Aset")){
                 // Mengisi data untuk ListView kedua
                 TextView name_aset = view.findViewById(R.id.txt_name_aset);
                 TextView tgl_buat = view.findViewById(R.id.txt_tgl_buat);
@@ -92,7 +94,14 @@ public class Adapter extends BaseAdapter {
                 tgl_buat.setText(data.getCreate_date());
                 total.setText(data.getTotal());
 
+            } else if (Objects.equals(isListViewUse, "AsetListView")) {
+                //isi data List view FragmentAset
+                TextView name_aset = view.findViewById(R.id.fragaset_name_aset);
+                TextView total = view.findViewById(R.id.fragaset_total_aset);
 
+                Data data = lists.get(i);
+                name_aset.setText(data.getAset());
+                total.setText(data.getTotal());
             }
 
         }

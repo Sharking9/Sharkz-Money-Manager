@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.Sharkz.Money_Manager.Fragments.AsetFragment;
+import com.Sharkz.Money_Manager.Fragments.BillFragment;
 import com.Sharkz.Money_Manager.Fragments.RecordsFragment;
 import com.Sharkz.Money_Manager.Fragments.SettingFragment;
 
@@ -21,8 +22,10 @@ public class MyViewPagerAdapter extends FragmentStateAdapter {
             case 0:
                 return new RecordsFragment();
             case 1:
-                return new AsetFragment();
+                return new BillFragment();
             case 2:
+                return new AsetFragment();
+            case 3:
                 return new SettingFragment();
             default:
                 return new RecordsFragment();
@@ -31,6 +34,6 @@ public class MyViewPagerAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 3;
+        return 4;
     }
 }

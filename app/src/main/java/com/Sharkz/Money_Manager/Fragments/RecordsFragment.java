@@ -30,16 +30,16 @@ import java.util.List;
 import java.util.Objects;
 
 public class RecordsFragment extends Fragment {
+    Helper db = new Helper(getContext());
     ListView listView;
-    AlertDialog.Builder dialog;
     List<Data> lists = new ArrayList<>();
     Adapter adapter;
-    Helper db = new Helper(getContext());
-    int Expensbln, Incomebln;
 
+    int Expensbln, Incomebln;
     int Cash, Invest, Bank_jp;
     TextView txtexpensbln, txtincomebln;
     FloatingActionButton btnAdd;
+    AlertDialog.Builder dialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,7 +65,7 @@ public class RecordsFragment extends Fragment {
             }
         });
         listView = view.findViewById(R.id.list_item);
-        adapter = new Adapter(getActivity(), lists, true);
+        adapter = new Adapter(getActivity(), lists, "RecordsListView");
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -121,7 +121,7 @@ public class RecordsFragment extends Fragment {
         Invest = 0;
         Bank_jp = 0;
 
-        ArrayList<HashMap<String, String>> rows = db.getAll();
+        ArrayList<HashMap<String, String>> rows = db.getAll("DESC");
         for (int i = 0; i < rows.size(); i++){
             String id = rows.get(i).get("id");
             String name = rows.get(i).get("name");

@@ -30,17 +30,18 @@ import java.util.Locale;
 
 public class EditorActivity extends AppCompatActivity {
 
+    private final Helper db = new Helper(this);
+    private ListView assetListView;
+    List<Data> lists = new ArrayList<>();
+    Adapter adapter;
+
     private EditText editName, editJumlah;
     private TextView editLabel;
     private Button Expens, Incomes;
     private Button editTanggal, editjam, delete, select_asset;
     private Button btnSave;
-    private final Helper db = new Helper(this);
     private String id, name, jumlah, tanggal, label;
     private String TypeEI, Aset;
-    private ListView assetListView;
-    List<Data> lists = new ArrayList<>();
-    Adapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,7 +147,7 @@ public class EditorActivity extends AppCompatActivity {
 
         assetListView = findViewById(R.id.asset_list_vie);
 
-        adapter = new Adapter(EditorActivity.this, lists, false);
+        adapter = new Adapter(EditorActivity.this, lists, "Select Aset");
         assetListView.setAdapter(adapter);
         select_asset.setOnClickListener(new View.OnClickListener() {
             @Override
