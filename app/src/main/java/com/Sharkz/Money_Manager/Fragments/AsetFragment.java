@@ -18,6 +18,7 @@ import com.Sharkz.Money_Manager.R;
 import com.Sharkz.Money_Manager.adapter.Adapter;
 import com.Sharkz.Money_Manager.helper.Helper;
 import com.Sharkz.Money_Manager.model.Data;
+import com.Sharkz.Money_Manager.model.MyColorTemplate;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
@@ -45,10 +46,10 @@ public class AsetFragment extends Fragment {
 
     PieChart pieChart;
     PieDataSet pieDataSet;
-    ArrayList<PieEntry> entries1;
+    ArrayList<PieEntry> entries22;
     LineChart lineChart3;
-    ArrayList<Entry> dataVals1, dataVals2;
-    LineDataSet lineDataSet1,lineDataSet2;
+    ArrayList<Entry> dataVals1, dataVals2, dataVals3, dataVals4;
+    LineDataSet lineDataSet1,lineDataSet2,lineDataSet3,lineDataSet4;
     TextView txttotalasets, txttotalliabilities;
     int Total_Aset;
     int fixpm, fixpm2;
@@ -92,20 +93,20 @@ public class AsetFragment extends Fragment {
     private void getDataAsetkePieChart(){
         Total_Aset = 0;
 
-        entries1 = new ArrayList<>();
+        entries22 = new ArrayList<>();
 
         ArrayList<HashMap<String, String>> rows = db.getAllAset();
         for (int i = 0; i < rows.size(); i++){
             String name_aset = rows.get(i).get("name_aset");
             String total = rows.get(i).get("total");
             if (Integer.parseInt(total)>=0){
-                entries1.add(new PieEntry(Integer.parseInt(total),name_aset));
+                entries22.add(new PieEntry(Integer.parseInt(total),name_aset));
             }
             Total_Aset = Total_Aset + Integer.parseInt(total);
         }
 
-        pieDataSet = new PieDataSet(entries1, "Your Assets");
-        pieDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        pieDataSet = new PieDataSet(entries22, "Your Assets");
+        pieDataSet.setColors(MyColorTemplate.MATERIAL_COLORS);
 
         PieData pieData = new PieData(pieDataSet);
         pieChart.setData(pieData);
@@ -134,8 +135,8 @@ public class AsetFragment extends Fragment {
         ArrayList<LegendEntry> legendEntries = new ArrayList<>();
         List<Integer> colors = pieDataSet.getColors(); // Mengambil warna dari setiap entri pie chart
 
-        for (int i = 0; i < entries1.size(); i++) {
-            PieEntry entry = entries1.get(i);
+        for (int i = 0; i < entries22.size(); i++) {
+            PieEntry entry = entries22.get(i);
             // Buat sebuah objek LegendEntry baru tanpa argumen
             LegendEntry legendEntry = new LegendEntry();
 
@@ -166,14 +167,20 @@ public class AsetFragment extends Fragment {
     }
 
     private void SetupLineChart3(){
-        lineDataSet1 = new LineDataSet(dataVals1, "Data 1");
+        lineDataSet1 = new LineDataSet(dataVals1, "Cash");
         lineDataSet1.setColor(Color.BLUE);
-        lineDataSet2 = new LineDataSet(dataVals2, "Data 2");
+        lineDataSet2 = new LineDataSet(dataVals2, "Invest");
         lineDataSet2.setColor(Color.RED);
+        lineDataSet3 = new LineDataSet(dataVals3, "Bank Jp");
+        lineDataSet3.setColor(Color.GREEN);
+        lineDataSet4 = new LineDataSet(dataVals4, "Smiles");
+        lineDataSet4.setColor(Color.YELLOW);
 
         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
         dataSets.add(lineDataSet1);
         dataSets.add(lineDataSet2);
+        dataSets.add(lineDataSet3);
+        dataSets.add(lineDataSet4);
 
         lineChart3.setBackgroundColor(Color.GRAY);
         lineChart3.setNoDataText("No Data");
@@ -190,6 +197,8 @@ public class AsetFragment extends Fragment {
     private void getDataAsetkeLineChart(){
         dataVals1 = new ArrayList<Entry>();
         dataVals2 = new ArrayList<Entry>();
+        dataVals3 = new ArrayList<Entry>();
+        dataVals4 = new ArrayList<Entry>();
 
         getAllAset();
 
@@ -248,6 +257,12 @@ public class AsetFragment extends Fragment {
                         }else if (label24.equals("Invest")){
                             dataVals2.add(new Entry(Float.parseFloat(blnAset), Float.parseFloat(String.valueOf(Temp3))));
                             Log.d("TAG", "Foradd dataline Invest = "+ label24 + " = " +Temp3);
+                        }else if (label24.equals("Bank Jp")){
+                            dataVals3.add(new Entry(Float.parseFloat(blnAset), Float.parseFloat(String.valueOf(Temp3))));
+                            Log.d("TAG", "Foradd dataline Bank Jp = "+ label24 + " = " +Temp3);
+                        }else if (label24.equals("Smiles")){
+                            dataVals4.add(new Entry(Float.parseFloat(blnAset), Float.parseFloat(String.valueOf(Temp3))));
+                            Log.d("TAG", "Foradd dataline Smiles = "+ label24 + " = " +Temp3);
                         }
                         dataAset.put(label24,0); //nilai sudah dimasukan ke linedata jadi reset utk tampung data bln depan
                     }

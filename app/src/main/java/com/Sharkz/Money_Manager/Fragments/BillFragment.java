@@ -1,7 +1,9 @@
 package com.Sharkz.Money_Manager.Fragments;
 
+import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,7 @@ import com.Sharkz.Money_Manager.R;
 import com.Sharkz.Money_Manager.adapter.Adapter;
 import com.Sharkz.Money_Manager.helper.Helper;
 import com.Sharkz.Money_Manager.model.Data;
+import com.Sharkz.Money_Manager.model.MyColorTemplate;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
@@ -144,7 +147,7 @@ public class BillFragment extends Fragment {
 
         if (ambildata.equals("EXP")){
             pieDataSet_expense = new PieDataSet(entries1, "Expense this month");
-            pieDataSet_expense.setColors(ColorTemplate.MATERIAL_COLORS);
+            pieDataSet_expense.setColors(MyColorTemplate.MATERIAL_COLORS);
 
             PieData pieData = new PieData(pieDataSet_expense);
             pieChart_expense.setData(pieData);
@@ -152,7 +155,7 @@ public class BillFragment extends Fragment {
             txttotalExpense.setText(String.valueOf(Total_Exp_inc));
         } else if (ambildata.equals("INC")) {
             pieDataSet_income = new PieDataSet(entries1, "Income this month");
-            pieDataSet_income.setColors(ColorTemplate.MATERIAL_COLORS);
+            pieDataSet_income.setColors(MyColorTemplate.MATERIAL_COLORS);
 
             PieData pieData = new PieData(pieDataSet_income);
             pieChart_income.setData(pieData);
