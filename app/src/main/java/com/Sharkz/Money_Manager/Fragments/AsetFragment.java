@@ -3,7 +3,6 @@ package com.Sharkz.Money_Manager.Fragments;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.os.Bundle;
-import android.renderscript.Sampler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,8 +31,6 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +52,7 @@ public class AsetFragment extends Fragment {
     TextView txttotalasets, txttotalliabilities;
     int Total_Aset;
     int fixpm, fixpm2;
+    HashMap<String, Integer> dataAset;
     String blnAset = "09", blnAset2 = "09";
 
     @Override
@@ -100,9 +98,9 @@ public class AsetFragment extends Fragment {
         for (int i = 0; i < rows.size(); i++){
             String name_aset = rows.get(i).get("name_aset");
             String total = rows.get(i).get("total");
-
-            entries1.add(new PieEntry(Integer.parseInt(total),name_aset));
-
+            if (Integer.parseInt(total)>=0){
+                entries1.add(new PieEntry(Integer.parseInt(total),name_aset));
+            }
             Total_Aset = Total_Aset + Integer.parseInt(total);
         }
 
@@ -193,9 +191,11 @@ public class AsetFragment extends Fragment {
         dataVals1 = new ArrayList<Entry>();
         dataVals2 = new ArrayList<Entry>();
 
+        getAllAset();
+
         ArrayList<HashMap<String, String>> rows = db.getAll("ASC");
-        int Tempblncash = -1,Tempblninvest = -1;
         int Tempcash = 0, TempInvest = 0;
+        int Temp = 0, Temp2 = 0;
         for (int i = 0; i < rows.size(); i++) {
             String aset = rows.get(i).get("aset");
             String tanggal = rows.get(i).get("tanggal");
@@ -215,45 +215,75 @@ public class AsetFragment extends Fragment {
             pisahbln2(tanggalnext);  //03
 
             if (Objects.equals(blnAset, blnAset2)) {
-                if (Objects.equals(aset, "Cash")) {
-                    fixpm = Tempcash + fixpm;
-                    Tempcash = fixpm;
-                }else if (Objects.equals(aset, "Invest")) {
-                    fixpm = TempInvest + fixpm;
-                    TempInvest = fixpm;
+                if (dataAset.containsKey(aset)) {
+                    Temp = dataAset.get(aset) + fixpm;
+                    dataAset.put(aset, Temp); //Simpan Sementara diHash data Label
+                    Log.d("TAG", "add dataAset bln sama( "+ aset + ") =  " +Temp+ " by record " +fixpm);
+                    Temp = 0;
                 }
+//                if (Objects.equals(aset, "Cash")) {
+//                    fixpm = Tempcash + fixpm;
+//                    Tempcash = fixpm;
+//                }else if (Objects.equals(aset, "Invest")) {
+//                    fixpm = TempInvest + fixpm;
+//                    TempInvest = fixpm;
+//                }
             } else if (!Objects.equals(blnAset, blnAset2)) {
-                if (Tempcash != 0){
-                    if (Objects.equals(aset, "Cash")){
-                        fixpm = Tempcash + fixpm;
-                    } else if (Objects.equals(aset, "Invest")){
-                        fixpm2 = Tempcash;
-                        dataVals1.add(new Entry(Float.parseFloat(blnAset), Float.parseFloat(String.valueOf(fixpm2))));
-//                        Log.d("TAG", "Masuk getdataLine TempCash dari fix aset "+aset+" "+ blnAset+" "+blnAset2+" "+fixpm2);
-                    }
-                    Tempcash = 0; //total diset dan temp reset
+                if (dataAset.get(aset) !=0){
+                    Temp = dataAset.get(aset) + fixpm;
+                    dataAset.put(aset, Temp); //Last Data Simpan Sementara diHash data Label
+                    Log.d("TAG", "dataAset bln beda, Tempada= "+ aset + " masukin " +Temp+ "Temp Reset");
+                } else if (dataAset.get(aset) == 0) {
+                    dataAset.put(aset, fixpm);
+                    Log.d("TAG", "dataAset bln beda, Temp0= "+ aset + " input record " +fixpm);
                 }
-                if (TempInvest != 0){
-                    if (Objects.equals(aset, "Invest")){
-                        fixpm = TempInvest + fixpm;
-                    } else if (Objects.equals(aset, "Cash")){
-                        fixpm2 = TempInvest;
-                        dataVals2.add(new Entry(Float.parseFloat(blnAset), Float.parseFloat(String.valueOf(fixpm2))));
-//                        Log.d("TAG", "Masuk getdataLine TempInvest dari fix aset "+aset+" "+ blnAset+" "+blnAset2+" "+fixpm2);
-                    }
-                    TempInvest = 0; //total diset dan temp reset
-                }
-                if (Tempcash == 0 && TempInvest == 0) {
-                    if (Objects.equals(aset, "Cash")) {
-                        dataVals1.add(new Entry(Float.parseFloat(blnAset), Float.parseFloat(String.valueOf(fixpm))));
-//                        Log.d("TAG", "Masuk For getdataLine21 "+aset+" "+ blnAset+" "+blnAset2+" "+fixpm);
 
-                    }else if (Objects.equals(aset, "Invest")) {
-                        dataVals2.add(new Entry(Float.parseFloat(blnAset), Float.parseFloat(String.valueOf(fixpm))));
-//                        Log.d("TAG", "Masuk For getdataLine22 "+aset+" "+ blnAset+" "+blnAset2+" "+fixpm);
-
+                for (String label24 : dataAset.keySet()) {
+                    int Temp3 = dataAset.get(label24);
+                    if (Temp3 != 0){
+                        ///Pilih Listview dan tambahkan
+                        if (label24.equals("Cash")){
+                            dataVals1.add(new Entry(Float.parseFloat(blnAset), Float.parseFloat(String.valueOf(Temp3))));
+                            Log.d("TAG", "Foradd dataline Cash = "+ label24 + " = " +Temp3);
+                        }else if (label24.equals("Invest")){
+                            dataVals2.add(new Entry(Float.parseFloat(blnAset), Float.parseFloat(String.valueOf(Temp3))));
+                            Log.d("TAG", "Foradd dataline Invest = "+ label24 + " = " +Temp3);
+                        }
+                        dataAset.put(label24,0); //nilai sudah dimasukan ke linedata jadi reset utk tampung data bln depan
                     }
+
                 }
+//                if (Tempcash != 0){
+//                    if (Objects.equals(aset, "Cash")){
+//                        fixpm = Tempcash + fixpm;
+//                    } else if (Objects.equals(aset, "Invest")){
+//                        fixpm2 = Tempcash;
+//                        dataVals1.add(new Entry(Float.parseFloat(blnAset), Float.parseFloat(String.valueOf(fixpm2))));
+////                        Log.d("TAG", "Masuk getdataLine TempCash dari fix aset "+aset+" "+ blnAset+" "+blnAset2+" "+fixpm2);
+//                    }
+//                    Tempcash = 0; //total diset dan temp reset
+//                }
+//                if (TempInvest != 0){
+//                    if (Objects.equals(aset, "Invest")){
+//                        fixpm = TempInvest + fixpm;
+//                    } else if (Objects.equals(aset, "Cash")){
+//                        fixpm2 = TempInvest;
+//                        dataVals2.add(new Entry(Float.parseFloat(blnAset), Float.parseFloat(String.valueOf(fixpm2))));
+////                        Log.d("TAG", "Masuk getdataLine TempInvest dari fix aset "+aset+" "+ blnAset+" "+blnAset2+" "+fixpm2);
+//                    }
+//                    TempInvest = 0; //total diset dan temp reset
+//                }
+//                if (Tempcash == 0 && TempInvest == 0) {
+//                    if (Objects.equals(aset, "Cash")) {
+//                        dataVals1.add(new Entry(Float.parseFloat(blnAset), Float.parseFloat(String.valueOf(fixpm))));
+////                        Log.d("TAG", "Masuk For getdataLine21 "+aset+" "+ blnAset+" "+blnAset2+" "+fixpm);
+//
+//                    }else if (Objects.equals(aset, "Invest")) {
+//                        dataVals2.add(new Entry(Float.parseFloat(blnAset), Float.parseFloat(String.valueOf(fixpm))));
+////                        Log.d("TAG", "Masuk For getdataLine22 "+aset+" "+ blnAset+" "+blnAset2+" "+fixpm);
+//
+//                    }
+//                }
             }
 
 
@@ -297,6 +327,16 @@ public class AsetFragment extends Fragment {
 //        if (tanggaledit.charAt(8) == ' ') {
 //            tanggaledit = "0" + tanggaledit.substring(9); // Mengganti tanggal dengan angka 0 di depannya
 //        }
+    }
+    private void getAllAset(){
+        ArrayList<HashMap<String, String>> rowslabel = db.getAllAset();
+        dataAset = new HashMap<>();
+
+        for (int i = 0; i < rowslabel.size(); i++){
+            String name_aset = rowslabel.get(i).get("name_aset");
+            dataAset.put(name_aset, 0);
+//            Log.d("TAG", "dataAset, "+ name_aset + " nilai "+total+" Diadd.");
+        }
     }
 
     private void getDataListAset(){
