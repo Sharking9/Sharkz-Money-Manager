@@ -132,8 +132,9 @@ public class RecordsFragment extends Fragment {
             String aset = rows.get(i).get("aset");
             String fixpm = "okk";
 
-            // Mengambil ID drawable dari label
-            int drawableId = getDrawableIdFromLabel(label);
+            //Convert Nama Label ke Drawable
+            // Mengambil ID drawable dari Data berdarsarkan Nama Label
+            int drawableId = Data.getDrawableIdFromLabel(label);
 
             Data data = new Data();
             data.setId(id);
@@ -176,30 +177,7 @@ public class RecordsFragment extends Fragment {
 
         adapter.notifyDataSetChanged();
     }
-    private int getDrawableIdFromLabel(String label) {
-        switch (label) {
-            case "Food":
-                return R.drawable.local_dining_24;
-            case "Tax":
-                return R.drawable.wallet_24;
-            case "Health":
-                return R.drawable.health_and_safety_24;
-            case "Education":
-                return R.drawable.menu_book_24;
-            case "Transport":
-                return R.drawable.directions_bus_24;
-            case "Uang Jajan":
-                return R.drawable.shopping_cart_24;
-            case "Sport":
-                return R.drawable.fitness_center_24;
-            case "Other":
-                return R.drawable.payment_24;
-            case "Shodaqoh":
-                return R.drawable.moderator_24;
-            default:
-                return R.drawable.payment_24;
-        }
-    }
+
 
     @Override
     public void onResume(){

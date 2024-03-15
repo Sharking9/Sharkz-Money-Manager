@@ -168,13 +168,13 @@ public class AsetFragment extends Fragment {
 
     private void SetupLineChart3(){
         lineDataSet1 = new LineDataSet(dataVals1, "Cash");
-        lineDataSet1.setColor(Color.BLUE);
+        lineDataSet1.setColor(MyColorTemplate.MATERIAL_COLORS[0]);
         lineDataSet2 = new LineDataSet(dataVals2, "Invest");
-        lineDataSet2.setColor(Color.RED);
+        lineDataSet2.setColor(MyColorTemplate.MATERIAL_COLORS[1]);
         lineDataSet3 = new LineDataSet(dataVals3, "Bank Jp");
-        lineDataSet3.setColor(Color.GREEN);
+        lineDataSet3.setColor(MyColorTemplate.MATERIAL_COLORS[2]);
         lineDataSet4 = new LineDataSet(dataVals4, "Smiles");
-        lineDataSet4.setColor(Color.YELLOW);
+        lineDataSet4.setColor(MyColorTemplate.MATERIAL_COLORS[3]);
 
         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
         dataSets.add(lineDataSet1);

@@ -2,6 +2,7 @@ package com.Sharkz.Money_Manager;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -39,7 +40,7 @@ public class EditorActivity extends AppCompatActivity {
     private TextView editLabel;
     private Button Expens, Incomes;
     private Button editTanggal, editjam, delete, select_asset;
-    private Button btnSave;
+    private Button btnSave, AddLabel;
     private String id, name, jumlah, tanggal, label;
     private String TypeEI, Aset;
 
@@ -60,6 +61,8 @@ public class EditorActivity extends AppCompatActivity {
         btnSave = findViewById(R.id.btn_save);
         editTanggal = findViewById(R.id.edit_tgl);
         editLabel = findViewById(R.id.edit_label);
+
+        AddLabel = findViewById(R.id.btn_add_label);
 
         select_asset = findViewById(R.id.asset);
 
@@ -212,6 +215,15 @@ public class EditorActivity extends AppCompatActivity {
                 }catch (Exception e){
                     Log.e("Saving", e.getMessage());
                 }
+            }
+        });
+
+        AddLabel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), Tag_Manager.class);
+                intent.putExtra("type", "EXP");
+                startActivity(intent);
             }
         });
 

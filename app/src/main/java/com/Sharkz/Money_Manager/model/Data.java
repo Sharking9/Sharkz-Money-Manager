@@ -1,5 +1,7 @@
 package com.Sharkz.Money_Manager.model;
 
+import com.Sharkz.Money_Manager.R;
+
 import java.security.SecureRandom;
 
 public class Data {
@@ -9,6 +11,7 @@ public class Data {
 
     private String name_aset, create_date, total;
     private int drawableId;
+    private String drawableStr;
 
 
 
@@ -71,6 +74,9 @@ public class Data {
     public int getDrawableId() { return drawableId; }
     public void setDrawableId(int drawableId) { this.drawableId = drawableId; }
 
+    public String getDrawableStr() { return drawableStr; }
+    public void setDrawableStr(String drawableStr) { this.drawableStr = drawableStr; }
+
     public String getTypeEI() { return type; }
     public void setTypeEI(String type) { this.type = type; }
     public String getAset() { return aset; }
@@ -103,4 +109,35 @@ public class Data {
     public void setTotal(String total) {
         this.total = total;
     }
+
+
+
+
+
+    public static int getDrawableIdFromLabel(String label) {
+        switch (label) {
+            case "Food":
+                return R.drawable.local_dining_24;
+            case "Tax":
+                return R.drawable.wallet_24;
+            case "Health":
+                return R.drawable.health_and_safety_24;
+            case "Education":
+                return R.drawable.menu_book_24;
+            case "Transport":
+                return R.drawable.directions_bus_24;
+            case "Uang Jajan":
+                return R.drawable.shopping_cart_24;
+            case "Sport":
+                return R.drawable.fitness_center_24;
+            case "Other":
+                return R.drawable.payment_24;
+            case "Shodaqoh":
+                return R.drawable.moderator_24;
+            default:
+                return R.drawable.payment_24;
+        }
+    }
+
+
 }

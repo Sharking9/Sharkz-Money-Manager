@@ -1,6 +1,7 @@
 package com.Sharkz.Money_Manager;
 
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -33,6 +34,7 @@ public class ButtonDeclarasi {
             public void onClick(View v) {
                 // Dapatkan gambar dari tombol
                 Drawable btndrawable = button2.getCompoundDrawables()[0]; // Anda mungkin perlu menyesuaikan indeks gambar
+                Log.d("TAG", "Data getDrawble( "+ btndrawable + " ");
                 // Set gambar ke TextView
                 context.handleButton2Click(btndrawable);
             }

@@ -99,6 +99,11 @@
             android:text="Shodaqoh"
             android:paddingHorizontal="10dp"/>
     </LinearLayout>
-
+    <Button
+        android:id="@+id/btn_add_label"
+        android:layout_margin="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="add Label"/>
 
 </LinearLayout>
