@@ -36,6 +36,7 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
@@ -49,6 +50,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Locale currentLocale = Locale.getDefault(); // Dapatkan locale perangkat
+        Log.d("Locale", "Current locale: " + currentLocale.getDisplayName());
+
 
         MyGoogleads();
 

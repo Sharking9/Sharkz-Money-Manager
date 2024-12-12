@@ -18,10 +18,10 @@ import java.util.List;
 import java.util.Objects;
 
 public class Adapter extends BaseAdapter {
-    private Activity activity;
+    private final Activity activity;
     private LayoutInflater inflater;
-    private List<Data> lists;
-    private String isListViewUse;
+    private final List<Data> lists;
+    private final String isListViewUse;
 
     public Adapter(Activity activity, List<Data> lists, String isListView){
         this.activity = activity;

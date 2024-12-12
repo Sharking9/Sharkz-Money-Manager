@@ -11,34 +11,11 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <Button
+            android:id="@+id/Backbtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="back" />
-        <TextView
-            android:id="@+id/LabelTempDrawId"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"/>
-        <TextView
-            android:id="@+id/LabelTemp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableStart="@drawable/directions_bus_24"
-            android:layout_weight="1"/>
-        <EditText
-            android:id="@+id/nama_labelTemp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="10"
-            android:text=""
-            android:hint="Nama Label"/>
-        <Button
-            android:id="@+id/Save_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Save"/>
     </LinearLayout>
     <GridLayout
         android:id="@+id/Grid_Label_Exp_User"

@@ -1,20 +1,20 @@
 package com.Sharkz.Money_Manager;
 
-import static com.Sharkz.Money_Manager.R.*;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.Sharkz.Money_Manager.adapter.Adapter;
 import com.Sharkz.Money_Manager.helper.Helper;
 import com.Sharkz.Money_Manager.model.Data;
 
@@ -22,33 +22,58 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Tag_Manager extends AppCompatActivity {
+
+public class TagEdit extends AppCompatActivity {
+
     Helper db = new Helper(this);
     List<Data> lists = new ArrayList<>();
+    Adapter adapter;
+    GridLayout Grid_label_014;
 
-    GridLayout Grid_label_01;
-
-    Button Back_btn;
-
+    Button Save_labelBtn,Back_btn;
+    TextView LabelTempView, LabelTempDrawid;
+    EditText LabelNametxt;
     String name_Label, type, Category;
     int DrawBtnInt;
     String DrawBtnStr;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tag_manager);
+        setContentView(R.layout.tag_edit);
+
+        LabelTempView = findViewById(R.id.LabelTemp);
+        LabelTempDrawid = findViewById(R.id.LabelTempDrawId);
+        LabelNametxt = findViewById(R.id.nama_labelTemp);
+
+        type = "EXP";
+        Category = "Food";
+
+
+        String namelbl = getIntent().getStringExtra("namelbl");
+        String tipelbl = getIntent().getStringExtra("tipelbl");
+        String DrawBtnStr1 = getIntent().getStringExtra("DrawBtnStr1");
+        String DrawBtnInt1 = getIntent().getStringExtra("DrawBtnInt1");
+        if (namelbl != null && !namelbl.isEmpty() && DrawBtnInt1 != null && !DrawBtnInt1.isEmpty()){
+            LabelNametxt.setText(namelbl);
+            type = tipelbl;
+            Log.d("TAG", "Edit Label( "+ DrawBtnInt1 + ") = laporan ");
+            Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), Integer.parseInt(DrawBtnInt1)); //Convert Int Drawable Ke Drawable
+            LabelTempView.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null); ///set Ke Tempview
+            LabelTempDrawid.setText(DrawBtnStr1); ///simpan DrawStr ke Item Hide
+        }
 
 
 
-        Grid_label_01 = findViewById(R.id.Grid_Label1);
+        Grid_label_014 = findViewById(R.id.Grid_Label14);
+
         getDataGrid("label", "EXP");
 
 
         int index = 0;
         while (index < lists.size()) {
             // Membuat satu baris dengan 4 tombol
-            for (int i = 0; i < 3 && index < lists.size(); i++) {
+            for (int i = 0; i < 4 && index < lists.size(); i++) {
                 final Data data = lists.get(index);
 
                 GridLayout.LayoutParams params = new GridLayout.LayoutParams();
@@ -72,43 +97,12 @@ public class Tag_Manager extends AppCompatActivity {
                     public void onClick(View view) {
                         // Tambahkan kode untuk aksi ketika tombol diklik
 
-                        // Membuat dialog pilihan
-                        AlertDialog.Builder builder = new AlertDialog.Builder(Tag_Manager.this);
-                        builder.setTitle("Edit or Delete");
-
-                        // Menambahkan pilihan untuk Edit dan Delete
-                        builder.setItems(new CharSequence[] {"Edit", "Delete"}, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                switch (which) {
-                                    case 0: // Edit
-                                        // Menambahkan logika untuk Edit
-                                        Intent intent = new Intent(Tag_Manager.this, TagEdit.class);
-
-                                        intent.putExtra("namelbl", data.getName());
-                                        intent.putExtra("tipelbl", data.getTypeEI());
-                                        intent.putExtra("DrawBtnStr1", data.getDrawableStr());
-                                        intent.putExtra("DrawBtnInt1", String.valueOf(data.getDrawableId()));
-                                        startActivity(intent);
-                                        break;
-
-                                    case 1: // Delete
-                                        // Menambahkan logika untuk Delete
-
-                                        break;
-                                }
-                            }
-                        });
-                        // Menampilkan dialog
-                        builder.show();
-
-
+                        LabelTempView.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null); ///set Ke Tempview
+                        LabelTempDrawid.setText(DrawBtnStr); ///simpan DrawStr ke Item Hide
                     }
                 });
 
-
-
-                Grid_label_01.addView(button);
+                Grid_label_014.addView(button);
                 Log.d("TAG", "add GridLabel( "+ data.getName() + ") =  " +params+ " by record ");
                 index++;
             }
@@ -118,7 +112,12 @@ public class Tag_Manager extends AppCompatActivity {
 
 
 
-        Back_btn = findViewById(id.Backbtn);
+
+
+
+
+
+        Back_btn = findViewById(R.id.Backbtn);
         Back_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -126,12 +125,26 @@ public class Tag_Manager extends AppCompatActivity {
             }
         });
 
-
+        Save_labelBtn = findViewById(R.id.Save_label);
+        Save_labelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String btndrawable = LabelTempDrawid.getText().toString(); // get Drawable int Dari TempDrawId yg telah diset dan hidden
+                save(LabelNametxt.getText().toString(), type, btndrawable, Category);
+            }
+        });
 
     }
 
-
-
+    private void  save(String namaLabel, String Type, String Drawable, String Category){
+        if (namaLabel.equals("") ||  Drawable.equals("")){
+            Toast.makeText(getApplicationContext(), "Silakan isi semua data!", Toast.LENGTH_SHORT).show();
+        } else {
+            db.insertLabel(namaLabel, Type, Drawable, Category);
+            finish();
+            Log.d("TAG", "Save Label "+ namaLabel + "+" +Drawable+ " by rec ");
+        }
+    }
 
     private void getDataGrid(String Label, String TypeEI){
 
@@ -187,6 +200,7 @@ public class Tag_Manager extends AppCompatActivity {
                 return R.drawable.payment_24;
         }
     }
+
 
 
 }
